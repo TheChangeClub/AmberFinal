@@ -1,11 +1,6 @@
-import { query } from './db';
-
 export async function getCigaretteById(id: string) {
-    try {
-        const result = await query('SELECT * FROM cigarettes WHERE id = $1', [id]);
-        return result.rows[0]; 
-    } catch (err) {
-        console.error("DB Fetch Error:", err);
-        return null;
-    }
+    // We parse the string ID to an Integer just to be safe
+    const numericId = parseInt(id, 10); 
+    const result = await query('SELECT * FROM cigarettes WHERE id = $1', [numericId]);
+    return result.rows[0]; 
 }

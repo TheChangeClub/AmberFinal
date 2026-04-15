@@ -1,3 +1,4 @@
+export const dynamic = 'force-dynamic';
 import { getCigaretteById } from '@/lib/data'; // Make sure this exists
 
 export default async function CigarettePage({ params }: { params: { id: string } }) {
