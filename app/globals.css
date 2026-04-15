@@ -1,18 +1,23 @@
-/* This makes the card glow when you hover over it */
-.humidor-card:hover {
-    border-color: #ffbf00 !important;
-    background-color: #0a0a0a;
-    transform: translateY(-2px);
-}
-
-/* Fixes for wonky spacing */
 * {
     box-sizing: border-box;
 }
-
 body {
     margin: 0;
-    padding: 0;
     background-color: #000;
     color: #ffbf00;
+    font-family: "Inter", sans-serif; /* Or any clean serif */
+    -webkit-font-smoothing: antialiased;
+}
+
+/* The "Glow" for your cards */
+.humidor-card {
+    transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+    border: 1px solid #1a1a1a;
+    background: #050505;
+}
+
+.humidor-card:hover {
+    border-color: #ffbf00;
+    transform: translateY(-4px);
+    box-shadow: 0 10px 30px rgba(255, 191, 0, 0.1);
 }

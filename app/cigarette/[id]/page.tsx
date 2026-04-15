@@ -3,34 +3,53 @@ import { getCigaretteById } from "@/lib/data";
 export default async function CigarettePage({
   params,
 }: {
-  params: { id: string };
+  params: Promise<{ id: string }>;
 }) {
-  const cigarette = await getCigaretteById(params.id);
+  // CRITICAL: You MUST await params in Next 15/16
+  const { id } = await params;
+  const cigarette = await getCigaretteById(id);
 
-  if (!cigarette) {
+  if (!cigarette)
     return (
       <main style={{ padding: "40px" }}>
         <h1>Blend Not Found</h1>
       </main>
     );
-  }
 
   return (
-    <main style={{ padding: "40px", maxWidth: "600px" }}>
-      <h1 style={{ fontSize: "3rem", margin: 0 }}>{cigarette.brand_name}</h1>
-      <p style={{ fontSize: "1.2rem", color: "#888" }}>{cigarette.variant}</p>
+    <main style={{ padding: "60px", maxWidth: "800px", margin: "0 auto" }}>
+      <h1 style={{ fontSize: "4rem", margin: 0, fontWeight: "900" }}>
+        {cigarette.brand_name}
+      </h1>
+      <p style={{ fontSize: "1.5rem", opacity: 0.5 }}>{cigarette.variant}</p>
 
       <div
-        style={{ marginTop: "40px", padding: "20px", border: "1px solid #222" }}
+        style={{
+          marginTop: "60px",
+          borderTop: "1px solid #222",
+          paddingTop: "40px",
+        }}
       >
-        <h3>Technicalities</h3>
-        <p>Blend: {cigarette.blend_type}</p>
-        <p>Menthol: {cigarette.is_menthol ? "Yes" : "No"}</p>
-        <p>Origin: {cigarette.origin}</p>
+        <p>
+          <strong>Blend:</strong> {cigarette.blend_type}
+        </p>
+        <p>
+          <strong>Origin:</strong> {cigarette.origin}
+        </p>
+        <p>
+          <strong>Menthol:</strong> {cigarette.is_menthol ? "Yes" : "No"}
+        </p>
       </div>
 
-      <div style={{ marginTop: "40px" }}>
-        <h3>Submit Rating</h3>
+      {/* Star Rating Section */}
+      <div
+        style={{
+          marginTop: "40px",
+          padding: "30px",
+          border: "1px solid #ffbf00",
+        }}
+      >
+        <h3>Submit 0.5-Step Review</h3>
         <input
           type="number"
           step="0.5"
@@ -38,11 +57,11 @@ export default async function CigarettePage({
           max="5"
           placeholder="0.0"
           style={{
+            padding: "10px",
             background: "none",
             border: "1px solid #ffbf00",
             color: "#ffbf00",
-            padding: "10px",
-            width: "60px",
+            width: "80px",
           }}
         />
         <button
@@ -50,11 +69,12 @@ export default async function CigarettePage({
             marginLeft: "10px",
             padding: "10px 20px",
             backgroundColor: "#ffbf00",
+            color: "#000",
             border: "none",
             fontWeight: "bold",
           }}
         >
-          RATE
+          POST
         </button>
       </div>
     </main>
