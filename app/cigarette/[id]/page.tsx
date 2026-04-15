@@ -1,22 +1,33 @@
-import Link from 'next/link';
-import { getAllCigarettes } from '@/lib/data'; // Switch to this
-import { Star } from 'lucide-react';
+import { getCigaretteById } from '@/lib/data';
 
-export default async function Home() {
-  const cigarettes = await getAllCigarettes(); // Fetch the real data
+export default async function CigaretteDetail({ params }: { params: { id: string } }) {
+  const cigarette = await getCigaretteById(params.id);
+
+  if (!cigarette) return <div style={{color: 'white'}}>Blend not found</div>;
 
   return (
-    <main style={{ padding: '20px', backgroundColor: '#000', color: '#ffbf00', minHeight: '100vh' }}>
-      <h1>Amber Humidor</h1>
-      <div style={{ display: 'grid', gap: '20px', marginTop: '20px' }}>
-        {cigarettes.map((c) => (
-          <Link key={c.id} href={`/cigarette/${c.id}`} style={{ border: '1px solid #333', padding: '15px', borderRadius: '8px', textDecoration: 'none', color: 'inherit' }}>
-            <h3>{c.brand_name} {c.variant}</h3>
-            <p>{c.blend_type} • {c.origin}</p>
-          </Link>
-        ))}
+    <main style={{ backgroundColor: '#000', color: '#ffbf00', minHeight: '100vh', padding: '40px' }}>
+      <div style={{ maxWidth: '600px', margin: '0 auto' }}>
+        <h1 style={{ fontSize: '3rem', marginBottom: '0' }}>{cigarette.brand_name}</h1>
+        <h2 style={{ fontSize: '1.5rem', color: '#888' }}>{cigarette.variant}</h2>
+        <hr style={{ borderColor: '#333', margin: '30px 0' }} />
+
+        <h3>Rate this Blend</h3>
+        <p style={{ color: '#666' }}>Increments of 0.5 stars allowed.</p>
+
+        {/* This is a simple version - you can expand this into a full form later */}
+        <div style={{ display: 'grid', gap: '15px', marginTop: '20px' }}>
+          {['Taste', 'Smoothness', 'Aroma', 'Burn'].map((label) => (
+            <div key={label} style={{ display: 'flex', justifyContent: 'space-between', borderBottom: '1px solid #222', padding: '10px 0' }}>
+              <span>{label}</span>
+              <input type="number" step="0.5" min="0" max="5" defaultValue="0" style={{ background: 'none', border: '1px solid #ffbf00', color: '#ffbf00', width: '50px', textAlign: 'center' }} />
+            </div>
+          ))}
+          <button style={{ backgroundColor: '#ffbf00', color: '#000', padding: '15px', fontWeight: 'bold', border: 'none', marginTop: '20px' }}>
+            SUBMIT REVIEW
+          </button>
+        </div>
       </div>
-      <Link href="/add" style={{ marginTop: '20px', display: 'inline-block', color: '#fff' }}>+ Add New Blend</Link>
     </main>
   );
 }
