@@ -1,5 +1,7 @@
 import { NextResponse } from "next/server";
 import postgres from "postgres";
+import { getServerSession } from "next-auth";
+import { authOptions } from "@/lib/auth";
 
 // Use the connection string from your psql terminal earlier
 const sql = postgres(
@@ -8,13 +10,20 @@ const sql = postgres(
 
 export async function POST(request: Request) {
   try {
+    const session = await getServerSession(authOptions);
+    
+    if (!session || !session.user) {
+      return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
+    }
+
+    const userId = (session.user as any).id;
     const body = await request.json();
 
     // Handle creating a new catalog entry (cigarette)
     if (body.brand) {
       const newCigarette = await sql`
-        INSERT INTO cigarettes (brand_name, variant, blend_type, origin)
-        VALUES (${body.brand}, ${body.variant}, ${body.blend}, ${body.origin})
+        INSERT INTO cigarettes (brand_name, variant, blend_type, origin, user_id)
+        VALUES (${body.brand}, ${body.variant}, ${body.blend}, ${body.origin}, ${userId})
         RETURNING *
       `;
       
@@ -25,9 +34,9 @@ export async function POST(request: Request) {
     if (body.cigarette_id !== undefined && body.overall !== undefined) {
       const result = await sql`
         INSERT INTO reviews (
-          cigarette_id, taste, smoothness, burn_quality, aroma, smoke_body, packaging, overall
+          cigarette_id, user_id, taste, smoothness, burn_quality, aroma, smoke_body, packaging, overall
         ) VALUES (
-          ${body.cigarette_id}, ${body.taste}, ${body.smoothness}, ${body.burn_quality},
+          ${body.cigarette_id}, ${userId}, ${body.taste}, ${body.smoothness}, ${body.burn_quality},
           ${body.aroma}, ${body.smoke_body}, ${body.packaging}, ${body.overall}
         )
         RETURNING *

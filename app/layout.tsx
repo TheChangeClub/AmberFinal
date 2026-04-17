@@ -1,11 +1,15 @@
 import Link from "next/link";
 import "./globals.css";
+import { getServerSession } from "next-auth";
+import { authOptions } from "@/lib/auth";
 
-export default function RootLayout({
+export default async function RootLayout({
   children,
 }: {
   children: React.ReactNode;
 }) {
+  const session = await getServerSession(authOptions);
+
   return (
     <html lang="en">
       <body className="bg-[#030303] text-zinc-200 min-h-screen font-sans selection:bg-[#FFB800] selection:text-black antialiased">
@@ -20,12 +24,35 @@ export default function RootLayout({
             </span>
           </Link>
           <nav className="flex gap-8 items-center">
-            <Link
-              href="/profile"
-              className="text-[10px] font-bold tracking-[0.2em] text-zinc-500 hover:text-[#FFB800] uppercase transition-colors"
-            >
-              PROFILE
-            </Link>
+            {session ? (
+              <>
+                <Link
+                  href="/add"
+                  className="text-[10px] font-bold tracking-[0.2em] text-zinc-500 hover:text-[#FFB800] uppercase transition-colors"
+                >
+                  ADD
+                </Link>
+                <Link
+                  href="/profile"
+                  className="text-[10px] font-bold tracking-[0.2em] text-zinc-500 hover:text-[#FFB800] uppercase transition-colors"
+                >
+                  PROFILE
+                </Link>
+                <a
+                  href="/api/auth/signout"
+                  className="text-[10px] font-bold tracking-[0.2em] text-zinc-500 hover:text-white uppercase transition-colors"
+                >
+                  SIGN OUT
+                </a>
+              </>
+            ) : (
+              <Link
+                href="/login"
+                className="text-[10px] font-bold tracking-[0.2em] text-[#FFB800] hover:text-white uppercase transition-colors"
+              >
+                LOGIN
+              </Link>
+            )}
           </nav>
         </header>
         <main className="pb-24 pt-6">{children}</main>
