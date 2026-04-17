@@ -1,23 +1,31 @@
-* {
-    box-sizing: border-box;
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+:root {
+    --amber: #ffbf00;
 }
+
 body {
-    margin: 0;
     background-color: #000;
-    color: #ffbf00;
-    font-family: "Inter", sans-serif; /* Or any clean serif */
-    -webkit-font-smoothing: antialiased;
+    color: #fff;
+    font-family: "Inter", sans-serif;
 }
 
-/* The "Glow" for your cards */
-.humidor-card {
-    transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
-    border: 1px solid #1a1a1a;
-    background: #050505;
+a {
+    text-decoration: none;
+    color: inherit;
 }
 
-.humidor-card:hover {
-    border-color: #ffbf00;
-    transform: translateY(-4px);
-    box-shadow: 0 10px 30px rgba(255, 191, 0, 0.1);
+/* Fixes the white input issue */
+input {
+    background: #111;
+    border: 1px solid #222;
+    color: white;
+    padding: 12px;
+}
+
+input:focus {
+    border-color: var(--amber);
+    outline: none;
 }

@@ -1,82 +1,63 @@
-import { getCigaretteById } from "@/lib/data";
+"use client";
+import { useState } from "react";
 
-export default async function CigarettePage({
-  params,
-}: {
-  params: Promise<{ id: string }>;
-}) {
-  // CRITICAL: You MUST await params in Next 15/16
-  const { id } = await params;
-  const cigarette = await getCigaretteById(id);
+const params = [
+  "taste",
+  "smoothness",
+  "burn_quality",
+  "aroma",
+  "smoke_body",
+  "packaging",
+  "overall",
+];
 
-  if (!cigarette)
-    return (
-      <main style={{ padding: "40px" }}>
-        <h1>Blend Not Found</h1>
-      </main>
-    );
+export default function CigarettePage() {
+  const [ratings, setRatings] = useState(
+    Object.fromEntries(params.map((p) => [p, 0.0])),
+  );
 
   return (
-    <main style={{ padding: "60px", maxWidth: "800px", margin: "0 auto" }}>
-      <h1 style={{ fontSize: "4rem", margin: 0, fontWeight: "900" }}>
-        {cigarette.brand_name}
+    <div className="max-w-4xl mx-auto">
+      <h1 className="text-6xl font-black text-[#ffbf00] mb-2 uppercase">
+        Gold Flake
       </h1>
-      <p style={{ fontSize: "1.5rem", opacity: 0.5 }}>{cigarette.variant}</p>
+      <p className="text-zinc-500 mb-10 uppercase tracking-widest">
+        Honeydew • Virginia • India
+      </p>
 
-      <div
-        style={{
-          marginTop: "60px",
-          borderTop: "1px solid #222",
-          paddingTop: "40px",
-        }}
-      >
-        <p>
-          <strong>Blend:</strong> {cigarette.blend_type}
-        </p>
-        <p>
-          <strong>Origin:</strong> {cigarette.origin}
-        </p>
-        <p>
-          <strong>Menthol:</strong> {cigarette.is_menthol ? "Yes" : "No"}
-        </p>
-      </div>
+      <div className="bg-[#0a0a0a] border border-zinc-900 p-8 rounded-sm">
+        <h3 className="text-[#ffbf00] font-bold uppercase tracking-widest mb-8 text-sm">
+          Submit 0.5-Step Review
+        </h3>
 
-      {/* Star Rating Section */}
-      <div
-        style={{
-          marginTop: "40px",
-          padding: "30px",
-          border: "1px solid #ffbf00",
-        }}
-      >
-        <h3>Submit 0.5-Step Review</h3>
-        <input
-          type="number"
-          step="0.5"
-          min="0"
-          max="5"
-          placeholder="0.0"
-          style={{
-            padding: "10px",
-            background: "none",
-            border: "1px solid #ffbf00",
-            color: "#ffbf00",
-            width: "80px",
-          }}
-        />
-        <button
-          style={{
-            marginLeft: "10px",
-            padding: "10px 20px",
-            backgroundColor: "#ffbf00",
-            color: "#000",
-            border: "none",
-            fontWeight: "bold",
-          }}
-        >
-          POST
+        <div className="grid grid-cols-1 md:grid-cols-2 gap-x-16 gap-y-6">
+          {params.map((p) => (
+            <div
+              key={p}
+              className="flex justify-between items-center border-b border-zinc-800 pb-2"
+            >
+              <span className="text-[10px] uppercase tracking-[0.2em] text-zinc-400">
+                {p.replace("_", " ")}
+              </span>
+              <input
+                type="number"
+                step="0.5"
+                min="0"
+                max="5"
+                className="bg-transparent text-[#ffbf00] text-right w-12 outline-none font-mono font-bold"
+                value={ratings[p]}
+                onChange={(e) =>
+                  setRatings({ ...ratings, [p]: parseFloat(e.target.value) })
+                }
+              />
+            </div>
+          ))}
+        </div>
+
+        <button className="w-full bg-[#ffbf00] text-black font-black py-4 mt-10 uppercase tracking-widest hover:bg-white transition-all">
+          POST REVIEW
         </button>
       </div>
-    </main>
+    </div>
   );
 }
